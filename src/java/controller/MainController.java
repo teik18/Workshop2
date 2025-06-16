@@ -19,27 +19,31 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(name="MainController", urlPatterns={"/MainController"})
 public class MainController extends HttpServlet {
    
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        
-    } 
-
+    private static final String LOGIN = "Login";
+    private static final String LOGIN_CONTROLLER = "LoginController";
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
-    } 
-
+            throws ServletException, IOException {
+        String url = "error.jsp";
+        try {
+            String action = request.getParameter("action");
+            if (LOGIN.equals(action)) {
+                url = LOGIN_CONTROLLER;
+            
+            } else {
+                url = "login.jsp";
+            }
+        } catch (Exception e) {
+            log("Error at MainController: " + e.toString());
+        } finally {
+            request.getRequestDispatcher(url).forward(request, response);
+        }
+    }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
+            throws ServletException, IOException {
+        // POST cũng xử lý giống GET
+        doGet(request, response);
     }
-
-
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }
