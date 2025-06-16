@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dto/User.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dao/CartDAO.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dao/InvoiceDAO.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/web/META-INF/context.xml</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/web/login.jsp</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dto/Return.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dto/Delivery.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dao/CartDetailDAO.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dao/InvoiceDetailDAO.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dao/ReturnDAO.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dao/DeliveryDAO.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dao/CategoryDAO.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dto/Category.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dto/CustomerCare.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dto/Product.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/web/WEB-INF/web.xml</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dto/Promotion.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dto/InvoiceDetail.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dao/UserDAO.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dto/Cart.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dao/PromotionDAO.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dto/Invoice.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dao/CustomerCareDAO.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/controller/MainController.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dto/CartDetail.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dao/ProductDAO.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/utils/DBUtils.java</file>
+        </group>
+    </open-files>
+</project-private>
