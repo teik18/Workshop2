@@ -148,7 +148,7 @@
             <input type="submit" name="action" value="Login">
 
             <div class="register-link">
-                <p>Don't have an account? <a href="#">Register</a></p>
+                <p>Don't have an account? <a href="register.jsp">Register</a></p>
             </div>
         </form>
     </div>

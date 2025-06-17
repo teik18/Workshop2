@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller;
+package controller.user;
 
 import dao.UserDAO;
 import dto.User;
@@ -32,7 +32,7 @@ public class LoginController extends HttpServlet {
             
             if (user != null) {
                 req.getSession().setAttribute("LOGIN_USER", user);
-                resp.sendRedirect(req.getContextPath() + "/userList.jsp");
+                resp.sendRedirect("SearchUserController");
             } else {
                 req.setAttribute("MSG", "Invalid user or password");
                 req.getRequestDispatcher("login.jsp").forward(req, resp);
