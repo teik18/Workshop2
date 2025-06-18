@@ -9,7 +9,7 @@ package dto;
 public class Product {
     private int productID, categoryID, quantity;
     private float price;
-    private String name, seller, status;
+    private String name, seller, status, cateName;
 
     public Product(int productID, int categoryID, int quantity, float price, String name, String seller, String status) {
         this.productID = productID;
@@ -19,6 +19,26 @@ public class Product {
         this.name = name;
         this.seller = seller;
         this.status = status;
+    }
+
+    public Product(int productID, int quantity, float price, String name, String seller, String status, String cateName) {
+        this.productID = productID;
+        this.quantity = quantity;
+        this.price = price;
+        this.name = name;
+        this.seller = seller;
+        this.status = status;
+        this.cateName = cateName;
+    }
+    
+    
+    
+    public String getCateName() {
+        return cateName;
+    }
+
+    public void setCateName(String cateName) {
+        this.cateName = cateName;
     }
 
     public int getProductID() {
