@@ -25,9 +25,9 @@ public class SearchUserController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         
-        String userID = request.getParameter("userID");
-        String fullName = request.getParameter("fullName");
-        String roleID = request.getParameter("roleID");
+        String userID = request.getParameter("SearchUserID");
+        String fullName = request.getParameter("SearchFullName");
+        String roleID = request.getParameter("SearchRoleID");
         
         try {
             UserDAO dao = new UserDAO();
