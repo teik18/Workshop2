@@ -73,8 +73,8 @@ public class CreateProductController extends HttpServlet {
                 return;
             }
             
-            
-            if (dao.createProduct(name, categoryID, price, quantity, status)) {
+            String sellerID = loginUser.getUserID();
+            if (dao.createProduct(name, categoryID, price, quantity, status, sellerID)) {
                 request.setAttribute("MSG", "Product created successfully.");
             } else {
                 request.setAttribute("MSG", "Failed to create product.");
@@ -91,7 +91,12 @@ public class CreateProductController extends HttpServlet {
     private void setProductListAttributes(HttpServletRequest request, User loginUser, String nameSearch, String cateSearch, float priceSearch, String statusSearch) {
         try {
             ProductDAO dao = new ProductDAO();
-            List<Product> list = dao.search(nameSearch, cateSearch, priceSearch, statusSearch);
+            List<Product> list;
+            if ("AD".equals(loginUser.getRoleID())) {
+                list = dao.search(nameSearch, cateSearch, priceSearch, statusSearch);
+            } else {
+                list = dao.getProductsByUser(loginUser.getUserID(), nameSearch, cateSearch, priceSearch, statusSearch);
+            }
             request.setAttribute("list", list);
             request.setAttribute("nameSearch", nameSearch);
             request.setAttribute("cateSearch", cateSearch);

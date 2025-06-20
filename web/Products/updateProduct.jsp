@@ -32,6 +32,7 @@
         <div class="form-container">
             <h2>Update Product</h2>
             <form action="MainController" method="POST">
+                <input type="hidden" name="id" value="<%= product.getProductID() %>">
                 <label>Name </label>
                 <input type="text" name="name" value="<%= product.getName() %>"><br>
 
@@ -43,7 +44,7 @@
                             ${category.categoryName}
                         </option>
                     </c:forEach>
-                </select><br><br>
+                </select><br>
                 
                 <label>Price </label>
                 <input type="number" name="price" value="<%= product.getPrice() %>"><br>
@@ -56,7 +57,17 @@
                     <option value="Active" <%= "Active".equals(product.getStatus()) ? "selected" : "" %>>Active</option>
                     <option value="Inactive" <%= "Inactive".equals(product.getStatus()) ? "selected" : "" %>>Inactive</option>
                 </select><br>
-
+                
+                <%
+                    String MSG = (String) request.getAttribute("MSG");
+                    if ((MSG != null && MSG.contains("successfully")) || (MSG != null && MSG.contains("Successfully"))) {
+                %>
+                <h3 id="msg" class="msg success"  style="color: #3c763d; background-color: #e0ffe0;"> <%= MSG%> </h3>
+                <%
+                    } else if (MSG != null) {
+                %>
+                <h3 id="msg" class="msg error" style="color: #a94442; background-color: #f2dede;"> <%= MSG%> </h3>
+                <% } %>
                 <button type="submit" name="action" value="UpdateProduct">Edit</button>
                 <a href="MainController?action=ViewProducts">Back to Product List</a>
             </form>

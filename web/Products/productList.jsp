@@ -142,6 +142,9 @@
                         <th>Price</th>
                         <th>Quantity</th>
                         <th>Status</th>
+                        <% if ("AD".equals(loginUser.getRoleID())) { %>
+                        <th>Seller</th>
+                        <% } %>
                         <% if ("SE".equals(loginUser.getRoleID())) { %>
                         <th>Function</th>
                         <% } %>
@@ -158,11 +161,14 @@
                         <td><input type="text" name="price" value="<%= product.getPrice()%>" readonly></td>
                         <td><input type="text" name="quantity" value="<%= product.getQuantity()%>" readonly></td>
                         <td><input type="text" name="status" value="<%= product.getStatus()%>" readonly></td>
+                        <% if ("AD".equals(loginUser.getRoleID())) { %>
+                        <td><input type="text" name="seller" value="<%= product.getSellerFullName() != null ? product.getSellerFullName() : "Unknown" %>" readonly></td>
+                        <% } %>
                         <% if ("SE".equals(loginUser.getRoleID())) { %>
                         <td> 
                             <div class="function-buttons">
                                 
-                                <form action="MainController" method="POST">
+                                <form action="MainController" method="GET">
                                     <input type="hidden" name="id" value="<%= product.getProductID() %>">
                                     <button type="submit" name="action" value="UpdateProduct">Update</button>
                                 </form>

@@ -45,11 +45,25 @@ public class SearchProductController extends HttpServlet {
         try {
             String nameSearch = request.getParameter("nameSearch") != null ? request.getParameter("nameSearch") : "";
             String cateSearch = request.getParameter("cateSearch") != null ? request.getParameter("cateSearch") : "";
-            Float priceSearch = request.getParameter("priceSearch") != null ? Float.parseFloat(request.getParameter("priceSearch")) : 0;
+            Float priceSearch = null;
+            if (request.getParameter("priceSearch") != null && !request.getParameter("priceSearch").isEmpty()) {
+                try {
+                    priceSearch = Float.parseFloat(request.getParameter("priceSearch"));
+                } catch (NumberFormatException e) {
+                    priceSearch = 0f;
+                }
+            } else {
+                priceSearch = 0f;
+            }
             String statusSearch = request.getParameter("statusSearch") != null ? request.getParameter("statusSearch") : "";
             
             ProductDAO dao = new ProductDAO();
-            List<Product> list = dao.search(nameSearch, cateSearch, priceSearch, statusSearch);
+            List<Product> list;
+            if ("AD".equals(loginUser.getRoleID())) {
+                list = dao.search(nameSearch, cateSearch, priceSearch, statusSearch);
+            } else {
+                list = dao.getProductsByUser(loginUser.getUserID(), nameSearch, cateSearch, priceSearch, statusSearch);
+            }
             List<Category> categories = dao.getAllCategories();
             
             request.setAttribute("list", list);
@@ -60,7 +74,7 @@ public class SearchProductController extends HttpServlet {
             request.setAttribute("categories", categories);
             request.getRequestDispatcher("Products/productList.jsp").forward(request, response);
         }catch (Exception e) {
-            log("Error in SearchProductController: " + e.getMessage());
+            log("Error in SearchProductController: " + e.getMessage(), e);
             request.setAttribute("ERROR", "An error occurred while searching product: " + e.getMessage());
             request.getRequestDispatcher("error.jsp").forward(request, response);
         } 

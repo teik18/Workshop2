@@ -30,9 +30,9 @@
                 <a href="MainController?action=SearchStock">Stock List</a>
                 <a href="MainController?action=SearchTransaction">Transaction List</a>
                 <a href="MainController?action=ViewAlerts">Alert List</a>
-                <a class="active" href="MainController?action=ViewCategories">Category List</a>
                 <% if ("AD".equals(loginUser.getRoleID())) { %>
                 <a href="MainController?action=SearchUser">User List</a>
+                <a class="active" href="MainController?action=ViewCategories">Category List</a>
                 <% } %>
             </div>
 
