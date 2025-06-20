@@ -1,1 +1,24 @@
+<<<<<<< HEAD
+# Compiled class files
+*.class
+
+# Build output
+build/
+dist/
+
+# NetBeans private configuration
+nbproject/private/
+
+# Log files
+*.log
+
+# IDE-specific files
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.settings/
+=======
 /dist/
+>>>>>>> 82c2dca7e746413d80ed2d60d110014a5cb50fcf

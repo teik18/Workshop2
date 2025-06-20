@@ -9,16 +9,39 @@ package dto;
 public class Product {
     private int productID, categoryID, quantity;
     private float price;
-    private String name, seller, status;
+    private String name, sellerID, status, cateName, sellerIDFullName;
 
-    public Product(int productID, int categoryID, int quantity, float price, String name, String seller, String status) {
+    
+
+    public Product(int productID, int categoryID, int quantity, float price, String name, String sellerID, String status) {
         this.productID = productID;
         this.categoryID = categoryID;
         this.quantity = quantity;
         this.price = price;
         this.name = name;
-        this.seller = seller;
+        this.sellerID = sellerID;
         this.status = status;
+    }
+
+    public Product(int productID, int quantity, float price, String name, String sellerID, String status, String cateName, String sellerIDFullName) {
+        this.productID = productID;
+        this.quantity = quantity;
+        this.price = price;
+        this.name = name;
+        this.sellerID = sellerID;
+        this.status = status;
+        this.cateName = cateName;
+        this.sellerIDFullName = sellerIDFullName;
+    }
+    
+    
+    
+    public String getCateName() {
+        return cateName;
+    }
+
+    public void setCateName(String cateName) {
+        this.cateName = cateName;
     }
 
     public int getProductID() {
@@ -61,12 +84,12 @@ public class Product {
         this.name = name;
     }
 
-    public String getSeller() {
-        return seller;
+    public String getSellerID() {
+        return sellerID;
     }
 
-    public void setSeller(String seller) {
-        this.seller = seller;
+    public void setSellerID(String sellerID) {
+        this.sellerID = sellerID;
     }
 
     public String getStatus() {
@@ -77,5 +100,11 @@ public class Product {
         this.status = status;
     }
     
-    
+    public String getSellerFullName() {
+        return sellerIDFullName;
+    }
+
+    public void setSellerFullName(String sellerIDFullName) {
+        this.sellerIDFullName = sellerIDFullName;
+    }
 }
