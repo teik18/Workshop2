@@ -1,4 +1,4 @@
-<%-- 
+    <%-- 
     Document   : productList
     Created on : Jun 18, 2025, 5:38:16 PM
     Author     : ACER
@@ -9,6 +9,7 @@
 <%@page import="dto.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -17,13 +18,9 @@
         <link rel="stylesheet" type="text/css" href="css/pageStyle.css"> 
     </head>
     <body>
-        <%
-            User loginUser = (User) session.getAttribute("LOGIN_USER");
-            if (loginUser == null) {
-                response.sendRedirect("login.jsp");
-                return;
-            }
-        %>
+        <c:if test="${empty sessionScope.LOGIN_USER}">
+            <c:redirect url="login.jsp"/>
+        </c:if>
         <div class="container">
             <div class="sidebar">
                 <h2>Menu</h2>
@@ -31,9 +28,10 @@
                 <a href="MainController?action=SearchTransaction">Transaction List</a>
                 <a href="MainController?action=ViewAlerts">Alert List</a>
                 <a class="active" href="MainController?action=ViewProducts">Product List</a>
-                <% if ("AD".equals(loginUser.getRoleID())) { %>
-                <a href="MainController?action=SearchUser">User List</a>
-                <% } %>
+                <c:if test="${sessionScope.LOGIN_USER.roleID == 'AD'}">
+                    <a href="MainController?action=SearchUser">User List</a>
+                    <a href="MainController?action=ViewCategories">Category List</a>
+                </c:if>
             </div>
 
             <div class="main-content">
@@ -68,9 +66,9 @@
                         </form>
 
                         <!--create form-->
-                        <% if ("SE".equals(loginUser.getRoleID())) { %>
+                        <c:if test="${sessionScope.LOGIN_USER.roleID == 'SE'}">
                         <button id="showCreateForm" class="button-green" onclick="toggleCreateForm()">Create</button>
-                        <% } %>
+                        </c:if>
                         <div id="createForm" style="display: none;">
                             <h3>Create New Product</h3> <hr>
                             <form action="MainController" method="POST">
@@ -113,16 +111,20 @@
                     </div>
 
                     <div class="message">
-                        <%
-                            String MSG = (String) request.getAttribute("MSG");
-                            if ((MSG != null && MSG.contains("successfully")) || (MSG != null && MSG.contains("Successfully"))) {
-                        %>
-                        <h3 id="msg" class="msg success"  style="color: #3c763d; background-color: #e0ffe0;"> <%= MSG%> </h3>
-                        <%
-                            } else if (MSG != null) {
-                        %>
-                        <h3 id="msg" class="msg error" style="color: #a94442; background-color: #f2dede;"> <%= MSG%> </h3>
-                        <% } %>
+                        <c:if test="${not empty requestScope.MSG}">
+                            <c:choose>
+                                <c:when test="${fn:contains(requestScope.MSG, 'successfully') || fn:contains(requestScope.MSG, 'Successfully')}">
+                                    <h3 id="msg" class="msg success" style="color: #3c763d; background-color: #e0ffe0;">
+                                        <c:out value="${requestScope.MSG}"/>
+                                    </h3>
+                                </c:when>
+                                <c:otherwise>
+                                    <h3 id="msg" class="msg error" style="color: #a94442; background-color: #f2dede;">
+                                        <c:out value="${requestScope.MSG}"/>
+                                    </h3>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:if>
                     </div>
                 </div>
                     
@@ -130,66 +132,51 @@
                    <p style="margin:10px 0;" >No matching products found!</p>
                 </c:if>
 
-                <%
-                    ArrayList<Product> list = (ArrayList<Product>) request.getAttribute("list");
-                    if (list != null) {
-                %>
-                <table>
-                    <tr>
-                        <th>No</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Status</th>
-                        <% if ("AD".equals(loginUser.getRoleID())) { %>
-                        <th>Seller</th>
-                        <% } %>
-                        <% if ("SE".equals(loginUser.getRoleID())) { %>
-                        <th>Function</th>
-                        <% } %>
-                    </tr>
-                    <%
-                        int count = 0;
-                        for (Product product : list) {
-                            count++;
-                    %>
-                    <tr>
-                        <td><%= count%></td>
-                        <td><input type="text" name="name" value="<%= product.getName()%>" readonly></td>
-                        <td><input type="text" name="cateName" value="<%= product.getCateName()%>" readonly></td>
-                        <td><input type="text" name="price" value="<%= product.getPrice()%>" readonly></td>
-                        <td><input type="text" name="quantity" value="<%= product.getQuantity()%>" readonly></td>
-                        <td><input type="text" name="status" value="<%= product.getStatus()%>" readonly></td>
-                        <% if ("AD".equals(loginUser.getRoleID())) { %>
-                        <td><input type="text" name="seller" value="<%= product.getSellerFullName() != null ? product.getSellerFullName() : "Unknown" %>" readonly></td>
-                        <% } %>
-                        <% if ("SE".equals(loginUser.getRoleID())) { %>
-                        <td> 
-                            <div class="function-buttons">
-                                
-                                <form action="MainController" method="GET">
-                                    <input type="hidden" name="id" value="<%= product.getProductID() %>">
-                                    <button type="submit" name="action" value="UpdateProduct">Update</button>
-                                </form>
-                                
-                                
-                                <form action="MainController" method="POST">
-                                    <input type="hidden" name="id" value="<%= product.getProductID() %>">
-                                    <button class="butDelete" type="submit" name="action" value="DeleteProduct" onclick="return confirm('Are you sure to delete this alert?')">Delete</button>
-                                </form>
-                                
-                            </div>
-                        </td>
-                        <% } %>
-                        
-                    </tr>
-                    <% }
-                    %>
-                </table>
-                <%
-                    }
-                %>
+                <c:if test="${not empty requestScope.list}">
+                    <table>
+                        <tr>
+                            <th>No</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            <c:if test="${sessionScope.LOGIN_USER.roleID == 'AD'}">
+                                <th>Seller</th>
+                            </c:if>
+                            <c:if test="${sessionScope.LOGIN_USER.roleID == 'SE'}">
+                                <th>Function</th>
+                            </c:if>
+                        </tr>
+                        <c:forEach var="product" items="${requestScope.list}" varStatus="loop">
+                            <tr>
+                                <td>${loop.count}</td>
+                                <td><c:out value="${product.name}"/></td>
+                                <td><c:out value="${product.cateName}"/></td>
+                                <td><c:out value="${product.price}"/></td>
+                                <td><c:out value="${product.quantity}"/></td>
+                                <td><c:out value="${product.status}"/></td>
+                                <c:if test="${sessionScope.LOGIN_USER.roleID == 'AD'}">
+                                    <td><c:out value="${not empty product.sellerFullName ? product.sellerFullName : 'Unknown'}"/></td>
+                                </c:if>
+                                <c:if test="${sessionScope.LOGIN_USER.roleID == 'SE'}">
+                                    <td>
+                                        <div class="function-buttons">
+                                            <form action="MainController" method="GET">
+                                                <input type="hidden" name="id" value="${product.productID}">
+                                                <button type="submit" name="action" value="UpdateProduct">Update</button>
+                                            </form>
+                                            <form action="MainController" method="POST">
+                                                <input type="hidden" name="id" value="${product.productID}">
+                                                <button class="butDelete" type="submit" name="action" value="DeleteProduct" onclick="return confirm('Are you sure to delete this alert?')">Delete</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </c:if>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </c:if>
             </div>
         </div>
 

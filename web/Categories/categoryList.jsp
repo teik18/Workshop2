@@ -9,6 +9,8 @@
 <%@page import="dto.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -17,23 +19,20 @@
         <link rel="stylesheet" type="text/css" href="css/pageStyle.css"> 
     </head>
     <body>
-        <%
-            User loginUser = (User) session.getAttribute("LOGIN_USER");
-            if (loginUser == null) {
-                response.sendRedirect("login.jsp");
-                return;
-            }
-        %>
+        <c:if test="${empty sessionScope.LOGIN_USER}">
+            <c:redirect url="login.jsp"/>
+        </c:if>
         <div class="container">
             <div class="sidebar">
                 <h2>Menu</h2>
                 <a href="MainController?action=SearchStock">Stock List</a>
                 <a href="MainController?action=SearchTransaction">Transaction List</a>
                 <a href="MainController?action=ViewAlerts">Alert List</a>
-                <% if ("AD".equals(loginUser.getRoleID())) { %>
-                <a href="MainController?action=SearchUser">User List</a>
-                <a class="active" href="MainController?action=ViewCategories">Category List</a>
-                <% } %>
+                <a href="MainController?action=ViewProducts">Product List</a>
+                <c:if test="${sessionScope.LOGIN_USER.roleID == 'AD'}">
+                    <a href="MainController?action=SearchUser">User List</a>
+                    <a class="active" href="MainController?action=ViewCategories">Category List</a>
+                </c:if>
             </div>
 
             <div class="main-content">
@@ -74,16 +73,20 @@
                     </div>
 
                     <div class="message">
-                        <%
-                            String MSG = (String) request.getAttribute("MSG");
-                            if ((MSG != null && MSG.contains("successfully")) || (MSG != null && MSG.contains("Successfully"))) {
-                        %>
-                        <h3 id="msg" class="msg success"  style="color: #3c763d; background-color: #e0ffe0;"> <%= MSG%> </h3>
-                        <%
-                            } else if (MSG != null) {
-                        %>
-                        <h3 id="msg" class="msg error" style="color: #a94442; background-color: #f2dede;"> <%= MSG%> </h3>
-                        <% } %>
+                        <c:if test="${not empty requestScope.MSG}">
+                            <c:choose>
+                                <c:when test="${fn:contains(requestScope.MSG, 'successfully') || fn:contains(requestScope.MSG, 'Successfully')}">
+                                    <h3 id="msg" class="msg success" style="color: #3c763d; background-color: #e0ffe0;">
+                                        <c:out value="${requestScope.MSG}"/>
+                                    </h3>
+                                </c:when>
+                                <c:otherwise>
+                                    <h3 id="msg" class="msg error" style="color: #a94442; background-color: #f2dede;">
+                                        <c:out value="${requestScope.MSG}"/>
+                                    </h3>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:if>
                     </div>
                 </div>
                     
@@ -91,49 +94,35 @@
                    <p style="margin:10px 0;" >No matching categories found!</p>
                 </c:if>
 
-                <%
-                    ArrayList<Category> list = (ArrayList<Category>) request.getAttribute("list");
-                    if (list != null) {
-                %>
-                <table>
-                    <tr>
-                        <th>No</th>
-                        <th>Category</th>
-                        <th>Description</th>
-                        <th>Function</th>
-                    </tr>
-                    <%
-                        int count = 0;
-                        for (Category category : list) {
-                            count++;
-                    %>
-                    <tr>
-                        <td><%= count%></td>
-                        <td><%= category.getCategoryName()%></td>
-                        <td><input type="text" name="type" value="<%= category.getDescription()%>" readonly></td>
-                        <td> 
-                            <div class="function-buttons">
-                                
-                                <form action="MainController" method="POST">
-                                    <input type="hidden" name="id" value="<%= category.getCategoryID() %>">
-                                    <button type="submit" name="action" value="UpdateCategory">Update</button>
-                                </form>
-                                
-                                
-                                <form action="MainController" method="POST">
-                                    <input type="hidden" name="id" value="<%= category.getCategoryID() %>">
-                                    <button class="butDelete" type="submit" name="action" value="DeleteCategory" onclick="return confirm('Are you sure to delete this alert?')">Delete</button>
-                                </form>
-                                
-                            </div>
-                        </td>
-                    </tr>
-                    <% }
-                    %>
-                </table>
-                <%
-                    }
-                %>
+                <c:if test="${not empty requestScope.list}">
+                    <table>
+                        <tr>
+                            <th>No</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Function</th>
+                        </tr>
+                        <c:forEach var="category" items="${requestScope.list}" varStatus="loop">
+                            <tr>
+                                <td>${loop.count}</td>
+                                <td><c:out value="${category.categoryName}"/></td>
+                                <td><c:out value="${category.description}"/></td>
+                                <td>
+                                    <div class="function-buttons">
+                                        <form action="MainController" method="POST">
+                                            <input type="hidden" name="id" value="${category.categoryID}">
+                                            <button type="submit" name="action" value="UpdateCategory">Update</button>
+                                        </form>
+                                        <form action="MainController" method="POST">
+                                            <input type="hidden" name="id" value="${category.categoryID}">
+                                            <button class="butDelete" type="submit" name="action" value="DeleteCategory" onclick="return confirm('Are you sure to delete this alert?')">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </c:if>
             </div>
         </div>
 
