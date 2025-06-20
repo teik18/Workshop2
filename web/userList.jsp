@@ -9,22 +9,25 @@
         <title>User List Page</title>
     </head>
     <body>
-        <%
-            User loginUser = (User) session.getAttribute("LOGIN_USER");
-            if (loginUser == null || !"AD".equals(loginUser.getRoleID())) {
-                response.sendRedirect("login.jsp");
-                return;
-            }
-        %>
+        <c:choose>
+            <c:when test="${empty sessionScope.LOGIN_USER || sessionScope.LOGIN_USER.roleID ne 'AD'}">
+                <c:redirect url="login.jsp"/>
+            </c:when>
+        </c:choose>
+
         <div class="container">
             <div class="sidebar">
                 <h2>Menu</h2>
-                <a href="MainController?action=SearchStock">Stock List</a>
-                <a href="MainController?action=SearchTransaction">Transaction List</a>
-                <a href="MainController?action=ViewAlerts">Alert List</a>
-                <% if ("AD".equals(loginUser.getRoleID())) { %>
-                <a class="active" href="MainController?action=SearchUser">User List</a>
-                <% } %>
+                <a href="MainController?action=SearchStock">Products List</a>
+                <a href="MainController?action=SearchTransaction">Categories List</a>
+                <a href="MainController?action=ViewAlerts">Carts List</a>
+                <a href="MainController?action=ViewAlerts">Invoices List</a>
+                <a href="MainController?action=ViewAlerts">Deliveries List</a>
+                <a href="MainController?action=ViewAlerts">Customer Care</a>
+                <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD'}">
+                    <a class="active" href="MainController?action=SearchUser">User List</a>
+                </c:if>
+
             </div>
 
             <div class="main-content">
@@ -59,21 +62,35 @@
                         <div id="createForm" style="display: none;">
                             <h3>Create New User</h3>
                             <form action="MainController" method="POST">
-                                User ID:<input type="text" name="userID" required>
-                                Full Name:<input type="text" name="fullName" required>
-
-                                Role ID:
-                                <select id="roleID" name="roleID" required>
-                                    <option value="AD">Admin</option>
-                                    <option value="SE">Seller</option>
-                                    <option value="BU">Buyer</option>
-                                    <option value="MK">Marketing</option>
-                                    <option value="DL">Delivery</option>
-                                    <option value="CS">Customer Care</option>
-                                </select>
-
-                                Password:<input type="password" name="password" required>
-                                Phone:<input type="text" name="phone" required>
+                                <div class="form-group">
+                                    <label for="userID">User ID:</label>
+                                    <input type="text" id="userID" name="userID" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="fullName">Full Name:</label>
+                                    <input type="text" id="fullName" name="fullName" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="roleID">Role ID:</label>
+                                    <select id="roleID" name="roleID" required>
+                                        <option value="AD">Admin</option>
+                                        <option value="SE">Seller</option>
+                                        <option value="BU">Buyer</option>
+                                        <option value="MK">Marketing</option>
+                                        <option value="DL">Delivery</option>
+                                        <option value="CS">Customer Care</option>
+                                    </select>
+                                </div> 
+                                
+                                <div class="form-group">
+                                    <label for="password">Password:</label>
+                                    <input type="password" id="password" name="password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone:</label>
+                                    <input type="text" id="phone" name="phone" required>
+                                </div>
 
                                 <button type="submit" name="action" value="CreateUser">Create</button>
                             </form>
@@ -108,11 +125,15 @@
                                 <td>${user.roleID}</td>
                                 <td>${user.password}</td>
                                 <td>${user.phone}</td>
-                                <td class="actions">
-                                    <a class="btn btn-sm btn-warning" href="MainController?action=GetUser&userID=${user.userID}">Update</a>
+                                <td class="actions"> 
+                                    <form action="MainController" method="get" style="display:inline;">
+                                        <input type="hidden" name="action" value="GetUser" />
+                                        <input type="hidden" name="userID" value="${user.userID}" />
+                                        <button type="submit">Update</button>
+                                    </form>
                                     <form action="MainController" method="post" style="display:inline;">
                                         <input type="hidden" name="userID" value="${user.userID}"/>
-                                        <button class="btn btn-sm btn-danger" type="submit" name="action" value="DeleteUser" onclick="return confirm('Are you sure to delete this user?')">Delete</button>
+                                        <button class="butDelete" type="submit" name="action" value="DeleteUser" onclick="return confirm('Are you sure to delete this user?')">Delete</button>
                                     </form>
                                 </td>
                             </tr>
