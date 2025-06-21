@@ -1,12 +1,41 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page import="dto.User"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="dto.User" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="css/pageStyle.css"> 
+        <meta charset="UTF-8">
         <title>User List Page</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {
+                background-color: #f8f9fa;
+            }
+            .sidebar {
+                min-height: 100vh;
+                background-color: #343a40;
+                color: white;
+            }
+            .sidebar a {
+                color: #adb5bd;
+                text-decoration: none;
+                display: block;
+                padding: 10px 15px;
+            }
+            .sidebar a:hover,
+            .sidebar .active {
+                background-color: #495057;
+                color: #fff;
+            }
+            .alert-fixed {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1050;
+                min-width: 250px;
+            }
+        </style>
     </head>
     <body>
         <c:choose>
@@ -15,163 +44,177 @@
             </c:when>
         </c:choose>
 
-        <div class="container">
-            <div class="sidebar">
-                <h2>Menu</h2>
-                <a href="MainController?action=SearchStock">Products List</a>
-                <a href="MainController?action=SearchTransaction">Categories List</a>
-                <a href="MainController?action=ViewAlerts">Carts List</a>
-                <a href="MainController?action=ViewAlerts">Invoices List</a>
-                <a href="MainController?action=ViewAlerts">Deliveries List</a>
-                <a href="MainController?action=ViewAlerts">Customer Care</a>
-                <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD'}">
-                    <a class="active" href="MainController?action=SearchUser">User List</a>
-                </c:if>
-
-            </div>
-
-            <div class="main-content">
-                <div class="header">
-                    <h1>Welcome, <c:out value="${sessionScope.LOGIN_USER.fullName}"/></h1>
-                    <a href="${pageContext.request.contextPath}/LogoutController" class="logout-link">Logout</a>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-2 sidebar py-4">
+                    <h4 class="text-center mb-4">Admin Menu</h4>
+                    <a href="MainController?action=SearchStock">Products List</a>
+                    <a href="MainController?action=SearchTransaction">Categories List</a>
+                    <a href="MainController?action=ViewAlerts">Carts List</a>
+                    <a href="MainController?action=ViewAlerts">Invoices List</a>
+                    <a href="MainController?action=ViewAlerts">Deliveries List</a>
+                    <a href="MainController?action=ViewAlerts">Customer Care</a>
+                    <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD'}">
+                        <a href="MainController?action=SearchUser" class="active">User List</a>
+                    </c:if>
                 </div>
 
-                <hr>
+                <!-- Main Content -->
+                <div class="col-md-10 p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2>Welcome, <c:out value="${sessionScope.LOGIN_USER.fullName}"/></h2>
+                        <a href="${pageContext.request.contextPath}/LogoutController" class="btn btn-danger">Logout</a>
+                    </div>
 
-                <div class="function-header">
-                    <div class="function">
-                        <!--search form-->
-                        <form action="MainController" method="get">
-                            User ID: <input type="text" name="SearchUserID" />
-                            Full Name: <input type="text" name="SearchFullName"/>
-                            Role:
-                            <select name="SearchRoleID">
-                                <option value="">All</option>
-                                <option value="AD">Admin</option>
-                                <option value="SE">Seller</option>
-                                <option value="BU">Buyer</option>
-                                <option value="MK">Marketing</option>
-                                <option value="DL">Delivery</option>
-                                <option value="CS">Customer Care</option>
-                            </select>
-                            <button type="submit" name="action" value="SearchUser">Search</button>
-                        </form>
+                    <!-- Message -->
+                    <c:if test="${not empty MSG}">
+                        <div id="msg" class="alert alert-fixed alert-${MSG.contains('Failed') ? 'danger' : 'success'} alert-dismissible fade show" role="alert">
+                            ${MSG}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </c:if>
 
-                        <!--create form-->
-                        <button id="showCreateForm" class="button-green" onclick="toggleCreateForm()">Create</button>
-                        <div id="createForm" style="display: none;">
-                            <h3>Create New User</h3>
-                            <form action="MainController" method="POST">
-                                <div class="form-group">
-                                    <label for="userID">User ID:</label>
-                                    <input type="text" id="userID" name="userID" required>
+                    <!-- Search Form -->
+                    <div class="card mb-4">
+                        <div class="card-header">Search Users</div>
+                        <div class="card-body">
+                            <form class="row g-3" action="MainController" method="get">
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" name="SearchUserID" placeholder="User ID" value="${param.SearchUserID}">
                                 </div>
-                                <div class="form-group">
-                                    <label for="fullName">Full Name:</label>
-                                    <input type="text" id="fullName" name="fullName" required>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" name="SearchFullName" placeholder="Full Name" value="${param.SearchFullName}">
                                 </div>
-                                
-                                <div class="form-group">
-                                    <label for="roleID">Role ID:</label>
-                                    <select id="roleID" name="roleID" required>
-                                        <option value="AD">Admin</option>
-                                        <option value="SE">Seller</option>
-                                        <option value="BU">Buyer</option>
-                                        <option value="MK">Marketing</option>
-                                        <option value="DL">Delivery</option>
-                                        <option value="CS">Customer Care</option>
+                                <div class="col-md-3">
+                                    <select class="form-select" name="SearchRoleID">
+                                        <option value="" ${empty param.SearchRoleID ? "selected" : ""}>All Roles</option>
+                                        <option value="AD" ${param.SearchRoleID eq 'AD' ? "selected" : ""}>Admin</option>
+                                        <option value="SE" ${param.SearchRoleID eq 'SE' ? "selected" : ""}>Seller</option>
+                                        <option value="BU" ${param.SearchRoleID eq 'BU' ? "selected" : ""}>Buyer</option>
+                                        <option value="MK" ${param.SearchRoleID eq 'MK' ? "selected" : ""}>Marketing</option>
+                                        <option value="DL" ${param.SearchRoleID eq 'DL' ? "selected" : ""}>Delivery</option>
+                                        <option value="CS" ${param.SearchRoleID eq 'CS' ? "selected" : ""}>Customer Care</option>
                                     </select>
-                                </div> 
-                                
-                                <div class="form-group">
-                                    <label for="password">Password:</label>
-                                    <input type="password" id="password" name="password" required>
                                 </div>
-                                <div class="form-group">
-                                    <label for="phone">Phone:</label>
-                                    <input type="text" id="phone" name="phone" required>
+                                <div class="col-md-3">
+                                    <button type="submit" name="action" value="SearchUser" class="btn btn-primary w-100">Search</button>
                                 </div>
-
-                                <button type="submit" name="action" value="CreateUser">Create</button>
                             </form>
                         </div>
                     </div>
-                            
-                    <div class="message">
-                        <c:if test="${not empty MSG}">
-                            <h3 id="msg" class="msg" style="color: ${MSG.contains('Failed') ? 'red' : 'green'};">
-                                  ${MSG}
-                            </h3>
-                        </c:if>
-                    </div>
-                </div>
-                
-                <c:if test="${empty listUser}">
-                    <p style="margin: 10px 0 0;">No matching users found!</p>
-                </c:if>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No</th><th>User ID</th><th>Full Name</th><th>Role ID</th><th>Password</th><th>Phone</th><th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach var="user" items="${listUser}" varStatus="st">
-                            <tr>
-                                <td>${st.count}</td>
-                                <td>${user.userID}</td>
-                                <td>${user.fullName}</td>
-                                <td>${user.roleID}</td>
-                                <td>${user.password}</td>
-                                <td>${user.phone}</td>
-                                <td class="actions"> 
-                                    <form action="MainController" method="get" style="display:inline;">
-                                        <input type="hidden" name="action" value="GetUser" />
-                                        <input type="hidden" name="userID" value="${user.userID}" />
-                                        <button type="submit">Update</button>
-                                    </form>
-                                    <form action="MainController" method="post" style="display:inline;">
-                                        <input type="hidden" name="userID" value="${user.userID}"/>
-                                        <button class="butDelete" type="submit" name="action" value="DeleteUser" onclick="return confirm('Are you sure to delete this user?')">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
+                    <!-- Create User Toggle -->
+                    <div class="mb-4">
+                        <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#createUserForm">
+                            Create New User
+                        </button>
+                    </div>
+
+                    <!-- Create Form -->
+                    <div class="collapse mb-4" id="createUserForm">
+                        <div class="card">
+                            <div class="card-header">Create User</div>
+                            <div class="card-body">
+                                <form action="MainController" method="POST" class="row g-3">
+                                    <div class="col-md-4">
+                                        <label for="userID" class="form-label">User ID</label>
+                                        <input type="text" class="form-control" id="userID" name="userID" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="fullName" class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="fullName" name="fullName" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="roleID" class="form-label">Role ID</label>
+                                        <select class="form-select" id="roleID" name="roleID" required>
+                                            <option value="AD">Admin</option>
+                                            <option value="SE">Seller</option>
+                                            <option value="BU">Buyer</option>
+                                            <option value="MK">Marketing</option>
+                                            <option value="DL">Delivery</option>
+                                            <option value="CS">Customer Care</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="password" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="password" name="password" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="phone" class="form-label">Phone</label>
+                                        <input type="text" class="form-control" id="phone" name="phone" required>
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-end">
+                                        <button type="submit" name="action" value="CreateUser" class="btn btn-success w-100">Create</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User List Table -->
+                    <c:if test="${empty listUser}">
+                        <div class="alert alert-warning">No matching users found!</div>
+                    </c:if>
+
+                    <c:if test="${not empty listUser}">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover align-middle">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>User ID</th>
+                                        <th>Full Name</th>
+                                        <th>Role ID</th>
+                                        <th>Password</th>
+                                        <th>Phone</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="user" items="${listUser}" varStatus="st">
+                                        <tr>
+                                            <td>${st.count}</td>
+                                            <td>${user.userID}</td>
+                                            <td>${user.fullName}</td>
+                                            <td>${user.roleID}</td>
+                                            <td>${user.password}</td>
+                                            <td>${user.phone}</td>
+                                            <td>
+                                                <div class="d-flex gap-2">
+                                                    <form action="MainController" method="get">
+                                                        <input type="hidden" name="action" value="GetUser" />
+                                                        <input type="hidden" name="userID" value="${user.userID}" />
+                                                        <button type="submit" class="btn btn-warning btn-sm">Update</button>
+                                                    </form>
+                                                    <form action="MainController" method="post" onsubmit="return confirm('Are you sure to delete this user?')">
+                                                        <input type="hidden" name="userID" value="${user.userID}" />
+                                                        <button type="submit" name="action" value="DeleteUser" class="btn btn-danger btn-sm">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                    </c:if>
+                </div>
             </div>
         </div>
 
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            function toggleCreateForm() {
-                const formDiv = document.getElementById("createForm");
-                const btn = document.getElementById("showCreateForm");
-                if (formDiv.style.display === "none") {
-                    formDiv.style.display = "block";
-                    btn.classList.remove("button-green");
-                    btn.classList.add("button-red");
-                    btn.innerHTML = "Close";
-                } else {
-                    formDiv.style.display = "none";
-                    btn.classList.remove("button-red");
-                    btn.classList.add("button-green");
-                    btn.innerHTML = "Create";
-                }
-            }
-
             window.addEventListener("DOMContentLoaded", () => {
                 const msg = document.getElementById("msg");
                 if (msg) {
                     setTimeout(() => {
-                        msg.style.opacity = "0"; // mờ dần
-                        setTimeout(() => {
-                            msg.style.display = "none"; // ẩn hoàn toàn sau khi mờ
-                        }, 500); // delay đúng bằng transition ở CSS (0.5s)
-                    }, 3000); // 3 giây trước khi bắt đầu mờ
+                        msg.classList.remove("show"); // mờ dần
+                        setTimeout(() => msg.remove(), 500); // xóa khỏi DOM
+                    }, 3000);
                 }
             });
         </script>
-
     </body>
 </html>
