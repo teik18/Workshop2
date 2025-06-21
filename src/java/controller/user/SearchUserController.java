@@ -32,15 +32,11 @@ public class SearchUserController extends HttpServlet {
         try {
             UserDAO dao = new UserDAO();
             List<User> list = dao.search(userID, fullName, roleID);
-            request.setAttribute("SearchUserID", userID);
-            request.setAttribute("SearchFullName", fullName);
-            request.setAttribute("SearchRoleID", roleID);
             request.setAttribute("listUser", list);
         } catch (Exception e) {
             log("Error at SearchUserController: " + e.toString());
-        } finally {
-            request.getRequestDispatcher("userList.jsp").forward(request, response);
         }
+        request.getRequestDispatcher("user/userList.jsp").forward(request, response);
     } 
 
     @Override
